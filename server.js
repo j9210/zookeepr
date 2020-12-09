@@ -29,19 +29,25 @@ function filterByQuery(query, animalsArray) {
       );
     });
   }
-    if (query.diet) {
-      filteredResults = filteredResults.filter(animal => animal.diet === query.diet);
-    }
-    if (query.species) {
-      filteredResults = filteredResults.filter(animal => animal.species === query.species);
-    }
-    if (query.name) {
-      filteredResults = filteredResults.filter(animal => animal.name === query.name);
-    }
-    return filteredResults;
+  if (query.diet) {
+    filteredResults = filteredResults.filter(animal => animal.diet === query.diet);
   }
+  if (query.species) {
+    filteredResults = filteredResults.filter(animal => animal.species === query.species);
+  }
+  if (query.name) {
+    filteredResults = filteredResults.filter(animal => animal.name === query.name);
+  }
+  return filteredResults;
+}
 
-// add route
+// find animals by their id to find one specific animal
+function findById(id, animalsArray) {
+  const result = animalsArray.filter(animal => animal.id === id)[0];
+  return result;
+}
+
+// GET routes
 app.get('/api/animals', (req, res) => {
     let results = animals;
     if (req.query) {
@@ -49,6 +55,16 @@ app.get('/api/animals', (req, res) => {
     }
     res.json(results);
   });
+
+app.get('/api/animals/:id', (req, res) => {
+  const result = findById(req.params.id, animals);
+  // if there's no record of the searched animal, return 404 status code
+  if (result) {
+    res.json(result);
+  } else {
+    res.send(404);
+  }
+});
 
 // method to make server listen
 app.listen(PORT, () => {
