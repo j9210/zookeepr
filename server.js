@@ -1,15 +1,17 @@
 const fs = require('fs');
 const path = require('path');
 const express = require('express');
+const { animals } = require('./data/animals');
+
 const PORT = process.env.PORT || 3001;
 const app = express();
+
 // parse incoming string or array data
 app.use(express.urlencoded({ extended: true }));
 // parse incoming JSON data
 app.use(express.json());
 // instructs server to make certain files readily available and to not gate it behind a server endpoint
 app.use(express.static('public'));
-const { animals } = require('./data/animals');
 
 function filterByQuery(query, animalsArray) {
   let personalityTraitsArray = [];
@@ -104,18 +106,6 @@ app.get('/api/animals/:id', (req, res) => {
   }
 });
 
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, './public/index.html'));
-});
-
-app.get('/animals', (req, res) => {
-  res.sendFile(path.join(__dirname, './public/animals.html'));
-});
-
-app.get('/zookeepers', (req, res) => {
-  res.sendFile(path.join(__dirname, './public/zookeepers.html'));
-});
-
 app.post('/api/animals', (req, res) => {
   // req.body is where our incoming content will be
   // set id based on what the next index of the array will be
@@ -131,7 +121,21 @@ app.post('/api/animals', (req, res) => {
   }
 });
 
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, './public/index.html'));
+});
 
+app.get('/animals', (req, res) => {
+  res.sendFile(path.join(__dirname, './public/animals.html'));
+});
+
+app.get('/zookeepers', (req, res) => {
+  res.sendFile(path.join(__dirname, './public/zookeepers.html'));
+});
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, './public/index.html'));
+});
 
 // method to make server listen
 app.listen(PORT, () => {
